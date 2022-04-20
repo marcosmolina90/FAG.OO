@@ -18,8 +18,11 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("rodou");
 
- String opc =        JOptionPane.showInputDialog("1 - listar \n " +
-                        "2 - Inserir");
+ String opc =        JOptionPane.showInputDialog(
+                        "1 - listar \n " +
+                        "2 - Inserir \n " +
+                        "3 - Find por id " +
+                        "4 - Update ");
 		switch (opc){
             case "1":
                 List<Estado> listEstado = listEstado();
@@ -31,6 +34,13 @@ public class Main {
             case "2":
                 inserir();
                 break;
+            case "3":
+                JOptionPane.showMessageDialog(null, find());
+                break;
+            case "4":
+                update();
+                break;
+
         }
 
         // FIND
@@ -57,6 +67,27 @@ public class Main {
 
 		entityManager.close();
 		entityManagerFactory.close();
+    }
+
+    private static void update() {
+        String sg = JOptionPane.showInputDialog("Informe a sigla do estado ");
+        entityManager.getTransaction();
+        entityManager.createNativeQuery("select * from Estado" +
+                " where sigla = :sg ").setParameter("sg", sg)
+                .getSingleResult();
+
+    }
+
+    private static Estado find() {
+        entityManager.getTransaction();
+        long id = Long.valueOf(JOptionPane.showInputDialog("Informe o id"));
+        Estado resultado = entityManager.find(Estado.class, id);
+        if(resultado == null){
+            JOptionPane.showMessageDialog(null,
+                    "Id não encontrado");
+        }
+        entityManager.close();
+        return  resultado;
     }
 
     private static void inserir() {
