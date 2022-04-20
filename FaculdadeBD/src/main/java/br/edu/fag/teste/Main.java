@@ -4,6 +4,7 @@ import br.edu.fag.modelo.Estado;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.swing.*;
 import java.util.List;
@@ -18,11 +19,12 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("rodou");
 
- String opc =        JOptionPane.showInputDialog(
+        String opc = JOptionPane.showInputDialog(
                         "1 - listar \n " +
                         "2 - Inserir \n " +
-                        "3 - Find por id " +
-                        "4 - Update ");
+                        "3 - Find por id \n " +
+                        "4 - Update \n "+
+                        "5 - Delete ");
 		switch (opc){
             case "1":
                 List<Estado> listEstado = listEstado();
@@ -39,6 +41,9 @@ public class Main {
                 break;
             case "4":
                 update();
+                break;
+            case "5":
+                delete();
                 break;
 
         }
@@ -69,13 +74,62 @@ public class Main {
 		entityManagerFactory.close();
     }
 
+    private static void delete() {
+        String sg = JOptionPane.showInputDialog("Informe a sigla do estado ");
+        Estado estado = null;
+        try {
+            estado = (Estado) entityManager.createNativeQuery(
+                            "select * from Estado" +
+                                    " where sigla = :sg ", Estado.class)
+                    .setMaxResults(1)
+                    .setParameter("sg", sg)
+                    .getSingleResult();
+        }catch (NoResultException nre){
+            JOptionPane.showMessageDialog(null,
+                    "Estado  (" + sg + ") não encontrado ");
+        }
+        if(0 == JOptionPane.showConfirmDialog(null,
+                "Deseja Excluir "+estado.toString())){
+            entityManager.getTransaction().begin();
+            entityManager.remove(estado);
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        }
+    }
+
     private static void update() {
         String sg = JOptionPane.showInputDialog("Informe a sigla do estado ");
-        entityManager.getTransaction();
-        entityManager.createNativeQuery("select * from Estado" +
-                " where sigla = :sg ").setParameter("sg", sg)
-                .getSingleResult();
 
+        Estado estado = null;
+        try {
+             estado = (Estado) entityManager.createNativeQuery(
+                            "select * from Estado" +
+                                    " where sigla = :sg ", Estado.class)
+                     .setMaxResults(1)
+                     .setParameter("sg", sg)
+                    .getSingleResult();
+        }catch (NoResultException nre){
+            String cadastrar = JOptionPane.showInputDialog(
+                    "Estado  (" + sg + ") não encontrado  \n" +
+                    "Digite S para cadastrar um novo estado ");
+            if("S".equals(cadastrar)){
+                inserir();
+            }
+        }
+        if (estado == null) {
+            String cadastrar = JOptionPane.showInputDialog(
+                    "Estado  (" + sg + ") não encontrado  \n" +
+                            "Digite S para cadastrar um novo estado ");
+            if("S".equals(cadastrar)){
+                inserir();
+            }
+        }
+        estado.setCodigo(JOptionPane.showInputDialog("Informe o novo codigo"));
+        estado.setNome(JOptionPane.showInputDialog("Informe o novo nome"));
+        entityManager.getTransaction().begin();
+        entityManager.merge(estado);
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     private static Estado find() {
