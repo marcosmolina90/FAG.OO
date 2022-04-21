@@ -15,7 +15,8 @@ public class Municipio {
     private String codigo;
     @Column(length = 400, nullable = false)
     private String nome;
-   
+    @ManyToOne
+    private Estado estado;
 
     public long getId() {
         return id;
