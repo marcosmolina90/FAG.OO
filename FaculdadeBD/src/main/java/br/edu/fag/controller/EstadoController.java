@@ -73,6 +73,22 @@ public class EstadoController {
         entityManager.close();
     }
 
+    public Estado findPorSigla(String sigla){
+        try {
+            return  (Estado) entityManager.createNativeQuery(
+                            "select * from Estado" +
+                                    " where sigla = :sg ",
+                            Estado.class)
+                    .setMaxResults(1)
+                    .setParameter("sg", sigla)
+                    .getSingleResult();
+        }catch (NoResultException nre){
+            JOptionPane.showMessageDialog(null,
+                    "Estado  (" + sigla + ") não encontrado ");
+        }
+        return  null;
+    }
+
     public Estado find() {
         entityManager.getTransaction();
         long id = Long.valueOf(JOptionPane.showInputDialog("Informe o id"));

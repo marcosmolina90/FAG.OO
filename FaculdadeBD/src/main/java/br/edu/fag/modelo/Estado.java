@@ -50,7 +50,7 @@ public class Estado {
         this.sigla = sigla;
     }
 
-    
+
 
     @Override
     public String toString() {
