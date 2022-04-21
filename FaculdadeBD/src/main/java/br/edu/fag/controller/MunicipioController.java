@@ -86,12 +86,13 @@ public class MunicipioController {
     }
 
     public  void inserir() {
-        Municipio Municipio = new Municipio();
-        Municipio.setCodigo(JOptionPane.showInputDialog("Informe Código"));
-        Municipio.setNome(JOptionPane.showInputDialog("Informe Nome"));
+        Municipio municipio = new Municipio();
+        municipio.setCodigo(JOptionPane.showInputDialog("Informe Código"));
+        municipio.setNome(JOptionPane.showInputDialog("Informe Nome"));
+        municipio.setE
 //
         entityManager.getTransaction().begin();
-        entityManager.persist(Municipio);
+        entityManager.persist(municipio);
         entityManager.getTransaction().commit();
 
     }
