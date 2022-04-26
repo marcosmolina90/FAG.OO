@@ -43,7 +43,7 @@ public class Main {
                         municipioController.listMunicipio();
                 for (Municipio e : listMunicipio) {
                     JOptionPane.showMessageDialog(null,
-                            e.toString());
+                            e.getNome()+"/"+e.getEstado().getSigla());
                 }
                 break;
             case "2":

@@ -89,8 +89,13 @@ public class MunicipioController {
         Municipio municipio = new Municipio();
         municipio.setCodigo(JOptionPane.showInputDialog("Informe Código"));
         municipio.setNome(JOptionPane.showInputDialog("Informe Nome"));
-        EstadoController
-        municipio.setE
+        EstadoController estadoController = new EstadoController();
+        municipio.setEstado(
+                estadoController.findPorSigla(
+                        JOptionPane.showInputDialog(
+                                "Informe a sigla do estado ")
+                )
+        );
 //
         entityManager.getTransaction().begin();
         entityManager.persist(municipio);
