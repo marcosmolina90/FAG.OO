@@ -80,4 +80,17 @@ public class Endereco {
     public void setMunicipio(Municipio municipio) {
         this.municipio = municipio;
     }
+
+    @Override
+    public String toString() {
+        return "Endereco{" +
+
+                ", logradouro='" + logradouro + '\'' +
+                ", numero='" + numero + '\'' +
+                ", cep='" + cep + '\'' +
+                ", bairro='" + bairro + '\'' +
+                ", complemento='" + complemento + '\'' +
+                ", municipio=" + municipio +
+                '}';
+    }
 }

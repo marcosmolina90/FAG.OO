@@ -2,6 +2,7 @@ package br.edu.fag.teste;
 
 import br.edu.fag.controller.EstadoController;
 import br.edu.fag.controller.MunicipioController;
+import br.edu.fag.controller.PessoaController;
 import br.edu.fag.modelo.Estado;
 import br.edu.fag.modelo.Municipio;
 
@@ -19,11 +20,15 @@ public class Main {
     public static void main(String[] args) {
         String classe = JOptionPane.showInputDialog(
                 "E - Estado \n" +
-                "M - Municipio \n");
+                "M - Municipio \n" +
+                "P - Pessoa \n");
         if("E".equals(classe)) {
             menuEstado();
         }else if("M".equals(classe)){
             menuMunicipio();
+        }else if("P".equals(classe)){
+            PessoaController pc = new PessoaController();
+            pc.inserir();
         }
 
     }
