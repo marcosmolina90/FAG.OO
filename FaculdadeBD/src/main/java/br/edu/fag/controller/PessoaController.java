@@ -1,5 +1,6 @@
 package br.edu.fag.controller;
 
+import br.com.caelum.stella.validation.CPFValidator;
 import br.edu.fag.modelo.Endereco;
 import br.edu.fag.modelo.Pessoa;
 import com.squareup.okhttp.OkHttpClient;
@@ -18,6 +19,11 @@ public class PessoaController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void validaCPF(String cpf){
+        CPFValidator cpfValidator = new CPFValidator();
+        cpfValidator.assertValid(cpf);
     }
 
     private void carregaEndereco(Pessoa pessoa) throws IOException {
