@@ -16,7 +16,7 @@ public class Pessoa {
     private String cpf;
     @Column(length = 11)
     private String rg;
-    @Column
+    @ManyToOne
     private Endereco endereco;
 
     public UUID getId() {

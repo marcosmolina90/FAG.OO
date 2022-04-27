@@ -3,6 +3,7 @@ package br.edu.fag.controller;
 import br.com.caelum.stella.validation.CPFValidator;
 import br.edu.fag.modelo.Endereco;
 import br.edu.fag.modelo.Estado;
+import br.edu.fag.modelo.Municipio;
 import br.edu.fag.modelo.Pessoa;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -10,14 +11,21 @@ import com.squareup.okhttp.Response;
 import jdk.nashorn.internal.scripts.JO;
 import org.json.JSONObject;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
 import javax.swing.*;
 import java.io.IOException;
 
 public class PessoaController {
-
+    private EntityManagerFactory entityManagerFactory =
+            Persistence.createEntityManagerFactory("BancoPU");
+    private EntityManager entityManager =
+            entityManagerFactory.createEntityManager();
     public  void inserir() {
         try {
+            entityManager.getTransaction().begin();
             Pessoa pessoa = new Pessoa();
             pessoa.setCpf(JOptionPane.showInputDialog("Informe Cpf"));
             validaCPF(pessoa.getCpf());
@@ -29,10 +37,11 @@ public class PessoaController {
             }
             pessoa.setNome(JOptionPane.showInputDialog("Informe o nome"));
             pessoa.setRg(JOptionPane.showInputDialog("Informe o Rg"));
+            pessoa.setEndereco(entityManager.merge(createEndereco()));
 
+            entityManager.persist(pessoa);
+            entityManager.getTransaction().commit();
 
-
-            carregaEndereco(new Pessoa());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,6 +77,7 @@ public class PessoaController {
         Request request = new Request.Builder()
                 .url("http://viacep.com.br/ws/"+cep+"/json/")
                 .get().build();
+
         Response response = client.newCall(request).execute();
         JSONObject json = new JSONObject(response.body().string());
         Endereco e = new Endereco();
@@ -75,6 +85,18 @@ public class PessoaController {
         e.setLogradouro(json.getString("logradouro"));
         e.setCep(cep);
         e.setNumero(JOptionPane.showInputDialog("Informe o numero"));
+        MunicipioController municipioController = new MunicipioController();
+        e.setMunicipio(municipioController.findByCodigo(json.getString("ibge")));
+        if(e.getMunicipio() ==null){
+            EstadoController estadoController = new EstadoController();
+            Estado estado = estadoController.findPorSigla(json.getString("uf"));
+            Municipio municipio = new Municipio(
+                    json.getString("ibge"),
+                    json.getString("localidade"),
+                    estado);
+            e.setMunicipio(municipioController.inserir(municipio));
+        }
+        return e;
     }
 
 

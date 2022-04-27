@@ -18,6 +18,15 @@ public class Municipio {
     @ManyToOne
     private Estado estado;
 
+    public Municipio() {
+    }
+
+    public Municipio(String codigo, String nome, Estado estado) {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.estado = estado;
+    }
+
     public long getId() {
         return id;
     }

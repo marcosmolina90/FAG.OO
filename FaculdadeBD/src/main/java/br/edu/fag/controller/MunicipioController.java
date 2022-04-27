@@ -85,6 +85,13 @@ public class MunicipioController {
         return  resultado;
     }
 
+    public  Municipio inserir(Municipio municipio){
+        entityManager.getTransaction().begin();
+        municipio = entityManager.merge(municipio);
+        entityManager.getTransaction().commit();
+        return municipio;
+    }
+
     public  void inserir() {
         Municipio municipio = new Municipio();
         municipio.setCodigo(JOptionPane.showInputDialog("Informe Código"));
@@ -111,5 +118,21 @@ public class MunicipioController {
                         .getResultList();
         entityManager.close();
         return retorno;
+    }
+
+    public Municipio findByCodigo(String codigo) {
+
+        try {
+            return  (Municipio) entityManager.createNativeQuery(
+                            "select * from Municipio" +
+                                    " where codigo = :codigo ",
+                            Municipio.class)
+                    .setMaxResults(1)
+                    .setParameter("codigo", codigo)
+                    .getSingleResult();
+        }catch (NoResultException nre){
+            return  null;
+        }
+
     }
 }
