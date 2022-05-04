@@ -19,13 +19,8 @@ import javax.swing.*;
 import java.io.IOException;
 
 public class PessoaController {
-    private EntityManagerFactory entityManagerFactory =
-            Persistence.createEntityManagerFactory("BancoPU");
-    private EntityManager entityManager =
-            entityManagerFactory.createEntityManager();
-    public  void inserir() {
+        public  void inserir() {
         try {
-            entityManager.getTransaction().begin();
             Pessoa pessoa = new Pessoa();
             pessoa.setCpf(JOptionPane.showInputDialog("Informe Cpf"));
             validaCPF(pessoa.getCpf());
@@ -37,10 +32,10 @@ public class PessoaController {
             }
             pessoa.setNome(JOptionPane.showInputDialog("Informe o nome"));
             pessoa.setRg(JOptionPane.showInputDialog("Informe o Rg"));
-            pessoa.setEndereco(entityManager.merge(createEndereco()));
+            pessoa.setEndereco( Conexao.getConexao().merge(createEndereco()));
 
-            entityManager.persist(pessoa);
-            entityManager.getTransaction().commit();
+            Conexao.getConexao().persist(pessoa);
+            Conexao.getConexao().getTransaction().commit();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,7 +44,7 @@ public class PessoaController {
 
     private Pessoa findByCpf(String cpf) {
         try {
-            return  (Pessoa) entityManager.createNativeQuery(
+            return  (Pessoa)  Conexao.getConexao().createNativeQuery(
                             "select * from Pessoa" +
                                     " where cpf = :cpf ",
                             Estado.class)

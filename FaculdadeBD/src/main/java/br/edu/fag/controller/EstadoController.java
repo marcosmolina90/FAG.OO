@@ -10,16 +10,13 @@ import javax.swing.*;
 import java.util.List;
 
 public class EstadoController {
-    private  EntityManagerFactory entityManagerFactory =
-            Persistence.createEntityManagerFactory("BancoPU");
-    private  EntityManager entityManager =
-            entityManagerFactory.createEntityManager();
+
 
     public void delete() {
         String sg = JOptionPane.showInputDialog("Informe a sigla do estado ");
         Estado estado = null;
         try {
-            estado = (Estado) entityManager.createNativeQuery(
+            estado = (Estado) Conexao.getConexao().createNativeQuery(
                             "select * from Estado" +
                                     " where sigla = :sg ", Estado.class)
                     .setMaxResults(1)
@@ -31,10 +28,9 @@ public class EstadoController {
         }
         if(0 == JOptionPane.showConfirmDialog(null,
                 "Deseja Excluir "+estado.toString())){
-            entityManager.getTransaction().begin();
-            entityManager.remove(estado);
-            entityManager.getTransaction().commit();
-            entityManager.close();
+
+            Conexao.getConexao().remove(estado);
+            Conexao.getConexao().getTransaction().commit();
         }
     }
 
@@ -43,7 +39,7 @@ public class EstadoController {
 
         Estado estado = null;
         try {
-            estado = (Estado) entityManager.createNativeQuery(
+            estado = (Estado) Conexao.getConexao().createNativeQuery(
                             "select * from Estado" +
                                     " where sigla = :sg ", Estado.class)
                     .setMaxResults(1)
@@ -67,15 +63,15 @@ public class EstadoController {
         }
         estado.setCodigo(JOptionPane.showInputDialog("Informe o novo codigo"));
         estado.setNome(JOptionPane.showInputDialog("Informe o novo nome"));
-        entityManager.getTransaction().begin();
-        entityManager.merge(estado);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+
+        Conexao.getConexao().merge(estado);
+        Conexao.getConexao().getTransaction().commit();
+
     }
 
     public Estado findPorSigla(String sigla){
         try {
-            return  (Estado) entityManager.createNativeQuery(
+            return  (Estado) Conexao.getConexao().createNativeQuery(
                             "select * from Estado" +
                                     " where sigla = :sg ",
                             Estado.class)
@@ -90,14 +86,14 @@ public class EstadoController {
     }
 
     public Estado find() {
-        entityManager.getTransaction();
+        Conexao.getConexao().getTransaction();
         long id = Long.valueOf(JOptionPane.showInputDialog("Informe o id"));
-        Estado resultado = entityManager.find(Estado.class, id);
+        Estado resultado = Conexao.getConexao().find(Estado.class, id);
         if(resultado == null){
             JOptionPane.showMessageDialog(null,
                     "Id não encontrado");
         }
-        entityManager.close();
+
         return  resultado;
     }
 
@@ -107,19 +103,18 @@ public class EstadoController {
         estado.setSigla(JOptionPane.showInputDialog("Informe Sigla"));
         estado.setNome(JOptionPane.showInputDialog("Informe Nome"));
 //
-        entityManager.getTransaction().begin();
-        entityManager.persist(estado);
-        entityManager.getTransaction().commit();
+
+        Conexao.getConexao().persist(estado);
+        Conexao.getConexao().getTransaction().commit();
 
     }
 
     public  List<Estado> listEstado(){
-        entityManager.getTransaction().begin();
+
         List<Estado> retorno =
-                entityManager.createNativeQuery("select * from Estado ",
+                Conexao.getConexao().createNativeQuery("select * from Estado ",
                                 Estado.class)
                         .getResultList();
-        entityManager.close();
         return retorno;
     }
 }

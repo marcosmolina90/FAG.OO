@@ -10,16 +10,13 @@ import javax.swing.*;
 import java.util.List;
 
 public class MunicipioController {
-    private  EntityManagerFactory entityManagerFactory =
-            Persistence.createEntityManagerFactory("BancoPU");
-    private  EntityManager entityManager =
-            entityManagerFactory.createEntityManager();
+    
 
     public void delete() {
         String sg = JOptionPane.showInputDialog("Informe a codigo do Municipio ");
         Municipio Municipio = null;
         try {
-            Municipio = (Municipio) entityManager.createNativeQuery(
+            Municipio = (Municipio)  Conexao.getConexao().createNativeQuery(
                             "select * from Municipio" +
                                     " where codigo = :sg ", Municipio.class)
                     .setMaxResults(1)
@@ -31,10 +28,9 @@ public class MunicipioController {
         }
         if(0 == JOptionPane.showConfirmDialog(null,
                 "Deseja Excluir "+Municipio.toString())){
-            entityManager.getTransaction().begin();
-            entityManager.remove(Municipio);
-            entityManager.getTransaction().commit();
-            entityManager.close();
+
+            Conexao.getConexao().remove(Municipio);
+            Conexao.getConexao().getTransaction().commit();
         }
     }
 
@@ -43,7 +39,7 @@ public class MunicipioController {
 
         Municipio Municipio = null;
         try {
-            Municipio = (Municipio) entityManager.createNativeQuery(
+            Municipio = (Municipio)  Conexao.getConexao().createNativeQuery(
                             "select * from Municipio" +
                                     " where codigo = :codigo ", Municipio.class)
                     .setMaxResults(1)
@@ -67,28 +63,27 @@ public class MunicipioController {
         }
         Municipio.setCodigo(JOptionPane.showInputDialog("Informe o novo codigo"));
         Municipio.setNome(JOptionPane.showInputDialog("Informe o novo nome"));
-        entityManager.getTransaction().begin();
-        entityManager.merge(Municipio);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+
+        Conexao.getConexao().merge(Municipio);
+        Conexao.getConexao().getTransaction().commit();
+        
     }
 
     public Municipio find() {
-        entityManager.getTransaction();
+        Conexao.getConexao().getTransaction();
         long id = Long.valueOf(JOptionPane.showInputDialog("Informe o id"));
-        Municipio resultado = entityManager.find(Municipio.class, id);
+        Municipio resultado =  Conexao.getConexao().find(Municipio.class, id);
         if(resultado == null){
             JOptionPane.showMessageDialog(null,
                     "Id não encontrado");
         }
-        entityManager.close();
         return  resultado;
     }
 
     public  Municipio inserir(Municipio municipio){
-        entityManager.getTransaction().begin();
-        municipio = entityManager.merge(municipio);
-        entityManager.getTransaction().commit();
+       
+        municipio =  Conexao.getConexao().merge(municipio);
+        Conexao.getConexao().getTransaction().commit();
         return municipio;
     }
 
@@ -104,26 +99,26 @@ public class MunicipioController {
                 )
         );
 //
-        entityManager.getTransaction().begin();
-        entityManager.persist(municipio);
-        entityManager.getTransaction().commit();
+
+        Conexao.getConexao().persist(municipio);
+        Conexao.getConexao().getTransaction().commit();
 
     }
 
     public  List<Municipio> listMunicipio(){
-        entityManager.getTransaction().begin();
+       
         List<Municipio> retorno =
-                entityManager.createNativeQuery("select * from Municipio ",
+                Conexao.getConexao().createNativeQuery("select * from Municipio ",
                                 Municipio.class)
                         .getResultList();
-        entityManager.close();
+        Conexao.getConexao().close();
         return retorno;
     }
 
     public Municipio findByCodigo(String codigo) {
 
         try {
-            return  (Municipio) entityManager.createNativeQuery(
+            return  (Municipio)  Conexao.getConexao().createNativeQuery(
                             "select * from Municipio" +
                                     " where codigo = :codigo ",
                             Municipio.class)
