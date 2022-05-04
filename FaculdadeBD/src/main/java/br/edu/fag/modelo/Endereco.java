@@ -5,7 +5,7 @@ import java.util.UUID;
 
 @Entity
 @Table
-public class Endereco {
+public class Endereco extends BaseModelo {
 
 
 
@@ -25,9 +25,7 @@ public class Endereco {
     @ManyToOne
     private Municipio municipio;
 
-    public UUID getId() {
-        return id;
-    }
+
 
     public void setId(UUID id) {
         this.id = id;

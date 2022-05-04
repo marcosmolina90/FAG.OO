@@ -5,7 +5,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Estado")
-public class Estado {
+public class Estado extends BaseModelo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

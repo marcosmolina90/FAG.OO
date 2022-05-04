@@ -5,7 +5,7 @@ import java.util.UUID;
 
 @Table
 @Entity
-public class Pessoa {
+public class Pessoa extends  BaseModelo{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
